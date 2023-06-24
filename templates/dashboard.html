@@ -2,49 +2,92 @@
 <html>
 <head>
     <title>Dashboard</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
-<h1>Studenten verwalten</h1>
-<form action="/student/create" method="post">
-    <input type="text" name="student_name" placeholder="Name">
-    <input type="submit" value="Erstellen">
-</form>
+    <h1>Studenten verwalten</h1>
+    <form action="/student/create" method="post">
+        <input type="text" name="student_name" placeholder="Name">
+        <input type="text" name="matrikelnummer" placeholder="Matrikelnummer">
+        <input type="email" name="email" placeholder="E-Mail-Adresse">
+        <input type="submit" value="Erstellen">
+    </form>
 
-<ul>
-    {% for student in students %}
-    <li>
-        {{ student.name }}
-        <form action="/student/edit/{{ student.id }}" method="post">
-            <input type="text" name="name" placeholder="Name" value="{{ student.name }}">
-            <input type="submit" value="Bearbeiten">
-        </form>
-        <a href="/student/delete/{{ student.id }}">Löschen</a>
-    </li>
-    {% endfor %}
-</ul>
-
-<h1>Abschlussarbeiten verwalten</h1>
-<form action="/thesis/create" method="post">
-    <input type="text" name="title" placeholder="Titel">
-    <select name="student_id">
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Matrikelnummer</th>
+            <th>E-Mail</th>
+            <th>Aktionen</th>
+        </tr>
         {% for student in students %}
-        <option value="{{ student.id }}">{{ student.name }}</option>
+            <tr>
+                <td>{{ student.name }}</td>
+                <td>{{ student.matrikelnummer }}</td>
+                <td>{{ student.email }}</td>
+                <td>
+                    <form action="/student/edit/{{ student.id }}" method="post">
+                        <input type="text" name="name" placeholder="Name" value="{{ student.name }}">
+                        <input type="text" name="matrikelnummer" placeholder="Matrikelnummer" value="{{ student.matrikelnummer }}">
+                        <input type="email" name="email" placeholder="E-Mail-Adresse" value="{{ student.email }}">
+                        <input type="submit" value="Bearbeiten">
+                    </form>
+                    <a href="/student/delete/{{ student.id }}">Löschen</a>
+                </td>
+            </tr>
         {% endfor %}
-    </select>
-    <input type="submit" value="Erstellen">
-</form>
+    </table>
 
-<ul>
-    {% for thesis in theses %}
-    <li>
-        {{ thesis.title }} - {{ thesis.student_id }}
-        <form action="/thesis/edit/{{ thesis.id }}" method="post">
-            <input type="text" name="title" placeholder="Titel" value="{{ thesis.title }}">
-            <input type="submit" value="Bearbeiten">
-        </form>
-        <a href="/thesis/delete/{{ thesis.id }}">Löschen</a>
-    </li>
-    {% endfor %}
-</ul>
+    <h1>Abschlussarbeiten verwalten</h1>
+    <form action="/thesis/create" method="post">
+        <input type="text" name="title" placeholder="Titel">
+        <select name="student_id">
+            {% for student in students %}
+                <option value="{{ student.id }}">{{ student.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Erstellen">
+    </form>
+
+    <table>
+        <tr>
+            <th>Titel</th>
+            <th>Student</th>
+            <th>Aktionen</th>
+        </tr>
+        {% for thesis in theses %}
+            <tr>
+                <td>{{ thesis.title }}</td>
+                <td>{{ thesis.student.name }}</td>
+                <td>
+                    <form action="/thesis/edit/{{ thesis.id }}" method="post">
+                        <input type="text" name="title" placeholder="Titel" value="{{ thesis.title }}">
+                        <select name="student_id">
+                            {% for student in students %}
+                                <option value="{{ student.id }}" {% if student.id == thesis.student_id %}selected{% endif %}>{{ student.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="submit" value="Bearbeiten">
+                    </form>
+                    <a href="/thesis/delete/{{ thesis.id }}">Löschen</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>

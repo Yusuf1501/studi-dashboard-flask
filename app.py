@@ -13,6 +13,8 @@ migrate = Migrate(app, db)
 class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255))
+    matrikelnummer = db.Column(db.String(20))
+    email = db.Column(db.String(255))
 
 
 class Thesis(db.Model):
@@ -32,7 +34,9 @@ def dashboard():
 @app.route('/student/create', methods=['POST'])
 def create_student():
     name = request.form['student_name']
-    student = Student(name=name)
+    matrikelnummer = request.form['matrikelnummer']
+    email = request.form['email']
+    student = Student(name=name, matrikelnummer=matrikelnummer, email=email)
     db.session.add(student)
     db.session.commit()
     return redirect('/')
