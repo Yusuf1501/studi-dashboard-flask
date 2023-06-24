@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+<h1>Studenten verwalten</h1>
+<form action="/student/create" method="post">
+    <input type="text" name="name" placeholder="Name">
+    <input type="submit" value="Erstellen">
+</form>
+
+<ul>
+    {% for student in students %}
+    <li>
+        {{ student.name }}
+        <form action="/student/edit/{{ student.id }}" method="post">
+            <input type="text" name="name" placeholder="Name" value="{{ student.name }}">
+            <input type="submit" value="Bearbeiten">
+        </form>
+        <a href="/student/delete/{{ student.id }}">Löschen</a>
+    </li>
+    {% endfor %}
+</ul>
+
+<h1>Abschlussarbeiten verwalten</h1>
+<form action="/thesis/create" method="post">
+    <input type="text" name="title" placeholder="Titel">
+    <select name="student_id">
+        {% for student in students %}
+        <option value="{{ student.id }}">{{ student.name }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="Erstellen">
+</form>
+
+<ul>
+    {% for thesis in theses %}
+    <li>
+        {{ thesis.title }} - {{ thesis.student_id }}
+        <form action="/thesis/edit/{{ thesis.id }}" method="post">
+            <input type="text" name="title" placeholder="Titel" value="{{ thesis.title }}">
+            <input type="submit" value="Bearbeiten">
+        </form>
+        <a href="/thesis/delete/{{ thesis.id }}">Löschen</a>
+    </li>
+    {% endfor %}
+</ul>
+</body>
+</html>
