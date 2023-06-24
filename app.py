@@ -1,48 +1,52 @@
 from flask import Flask, render_template, request, redirect
+import mysql.connector
 
 app = Flask(__name__)
 
-# Beispiel-Daten für Studenten und Abschlussarbeiten
-students = [
-    {"id": 1, "name": "Max Mustermann"},
-    {"id": 2, "name": "Erika Musterfrau"}
-]
-
-theses = [
-    {"id": 1, "title": "Thesis 1", "student_id": 1},
-    {"id": 2, "title": "Thesis 2", "student_id": 2}
-]
+# Verbindung zur MySQL-Datenbank herstellen
+db = mysql.connector.connect(
+    host="localhost",  # Hostname der Datenbank
+    user="your_username",  # Ihr Benutzername
+    password="your_password",  # Ihr Passwort
+    database="your_database"  # Name Ihrer Datenbank
+)
 
 
 @app.route('/')
 def dashboard():
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM students")
+    students = cursor.fetchall()
+
+    cursor.execute("SELECT * FROM theses")
+    theses = cursor.fetchall()
+
     return render_template('dashboard.html', students=students, theses=theses)
 
 
 @app.route('/student/create', methods=['POST'])
 def create_student():
-    name = request.form['name']
-    student_id = len(students) + 1
-    students.append({"id": student_id, "name": name})
+    name = request.form['student_name']
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO students (name) VALUES (%s)", (name,))
+    db.commit()
     return redirect('/')
 
 
 @app.route('/student/edit/<int:student_id>', methods=['POST'])
 def edit_student(student_id):
     name = request.form['name']
-    for student in students:
-        if student['id'] == student_id:
-            student['name'] = name
-            break
+    cursor = db.cursor()
+    cursor.execute("UPDATE students SET name = %s WHERE id = %s", (name, student_id))
+    db.commit()
     return redirect('/')
 
 
 @app.route('/student/delete/<int:student_id>')
 def delete_student(student_id):
-    for student in students:
-        if student['id'] == student_id:
-            students.remove(student)
-            break
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM students WHERE id = %s", (student_id,))
+    db.commit()
     return redirect('/')
 
 
@@ -50,27 +54,26 @@ def delete_student(student_id):
 def create_thesis():
     title = request.form['title']
     student_id = int(request.form['student_id'])
-    thesis_id = len(theses) + 1
-    theses.append({"id": thesis_id, "title": title, "student_id": student_id})
+    cursor = db.cursor()
+    cursor.execute("INSERT INTO theses (title, student_id) VALUES (%s, %s)", (title, student_id))
+    db.commit()
     return redirect('/')
 
 
 @app.route('/thesis/edit/<int:thesis_id>', methods=['POST'])
 def edit_thesis(thesis_id):
     title = request.form['title']
-    for thesis in theses:
-        if thesis['id'] == thesis_id:
-            thesis['title'] = title
-            break
+    cursor = db.cursor()
+    cursor.execute("UPDATE theses SET title = %s WHERE id = %s", (title, thesis_id))
+    db.commit()
     return redirect('/')
 
 
 @app.route('/thesis/delete/<int:thesis_id>')
 def delete_thesis(thesis_id):
-    for thesis in theses:
-        if thesis['id'] == thesis_id:
-            theses.remove(thesis)
-            break
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM theses WHERE id = %s", (thesis_id,))
+    db.commit()
     return redirect('/')
 
 
