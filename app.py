@@ -1,52 +1,56 @@
 from flask import Flask, render_template, request, redirect
-import mysql.connector
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-# Verbindung zur MySQL-Datenbank herstellen
-db = mysql.connector.connect(
-    host="localhost",  # Hostname der Datenbank
-    user="user_version_1",  # Ihr Benutzername
-    password="pw_version_1",  # Ihr Passwort
-    database="ba_version_1"  # Name Ihrer Datenbank
-)
+# Konfiguration für die Verbindung zur MySQL-Datenbank
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://user_version_1:pw_version_1@localhost/ba_version_1'
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+# Definition der Datenbankmodelle für Studenten und Abschlussarbeiten
+class Student(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255))
+
+
+class Thesis(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255))
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'))
+    student = db.relationship('Student', backref=db.backref('theses', lazy=True))
 
 
 @app.route('/')
 def dashboard():
-    cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM students")
-    students = cursor.fetchall()
-
-    cursor.execute("SELECT * FROM theses")
-    theses = cursor.fetchall()
-
+    students = Student.query.all()
+    theses = Thesis.query.all()
     return render_template('dashboard.html', students=students, theses=theses)
 
 
 @app.route('/student/create', methods=['POST'])
 def create_student():
     name = request.form['student_name']
-    cursor = db.cursor()
-    cursor.execute("INSERT INTO students (name) VALUES (%s)", (name,))
-    db.commit()
+    student = Student(name=name)
+    db.session.add(student)
+    db.session.commit()
     return redirect('/')
 
 
 @app.route('/student/edit/<int:student_id>', methods=['POST'])
 def edit_student(student_id):
-    name = request.form['name']
-    cursor = db.cursor()
-    cursor.execute("UPDATE students SET name = %s WHERE id = %s", (name, student_id))
-    db.commit()
+    student = Student.query.get(student_id)
+    student.name = request.form['name']
+    db.session.commit()
     return redirect('/')
 
 
 @app.route('/student/delete/<int:student_id>')
 def delete_student(student_id):
-    cursor = db.cursor()
-    cursor.execute("DELETE FROM students WHERE id = %s", (student_id,))
-    db.commit()
+    student = Student.query.get(student_id)
+    db.session.delete(student)
+    db.session.commit()
     return redirect('/')
 
 
@@ -54,26 +58,26 @@ def delete_student(student_id):
 def create_thesis():
     title = request.form['title']
     student_id = int(request.form['student_id'])
-    cursor = db.cursor()
-    cursor.execute("INSERT INTO theses (title, student_id) VALUES (%s, %s)", (title, student_id))
-    db.commit()
+    student = Student.query.get(student_id)
+    thesis = Thesis(title=title, student=student)
+    db.session.add(thesis)
+    db.session.commit()
     return redirect('/')
 
 
 @app.route('/thesis/edit/<int:thesis_id>', methods=['POST'])
 def edit_thesis(thesis_id):
-    title = request.form['title']
-    cursor = db.cursor()
-    cursor.execute("UPDATE theses SET title = %s WHERE id = %s", (title, thesis_id))
-    db.commit()
+    thesis = Thesis.query.get(thesis_id)
+    thesis.title = request.form['title']
+    db.session.commit()
     return redirect('/')
 
 
 @app.route('/thesis/delete/<int:thesis_id>')
 def delete_thesis(thesis_id):
-    cursor = db.cursor()
-    cursor.execute("DELETE FROM theses WHERE id = %s", (thesis_id,))
-    db.commit()
+    thesis = Thesis.query.get(thesis_id)
+    db.session.delete(thesis)
+    db.session.commit()
     return redirect('/')
 
 
