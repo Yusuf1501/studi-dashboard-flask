@@ -6,9 +6,9 @@ app = Flask(__name__)
 # Verbindung zur MySQL-Datenbank herstellen
 db = mysql.connector.connect(
     host="localhost",  # Hostname der Datenbank
-    user="your_username",  # Ihr Benutzername
-    password="your_password",  # Ihr Passwort
-    database="your_database"  # Name Ihrer Datenbank
+    user="user_version_1",  # Ihr Benutzername
+    password="pw_version_1",  # Ihr Passwort
+    database="ba_version_1"  # Name Ihrer Datenbank
 )
 
 
