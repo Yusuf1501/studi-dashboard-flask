@@ -4,47 +4,50 @@
     <title>Thesis Evaluation</title>
 </head>
 <body>
-<h1>Thesis Evaluation Dashboard</h1>
+    <h1>Thesis Evaluation Dashboard</h1>
 
-<h2>Students</h2>
-<ul>
-    {% for student in students %}
-    <li>{{ student }}</li>
-    {% endfor %}
-</ul>
+    <h2>Students</h2>
+    <ul>
+        {% for student in students %}
+            <li>
+                {{ student['name'] }}
+                <form action="/remove_student/{{ student['name'] }}" method="get" style="display:inline;">
+                    <input type="submit" value="Remove Student">
+                </form>
+                <button onclick="toggleThesisForm('{{ student['name'] }}')">Add Thesis</button>
+                <div id="{{ student['name'] }}-thesis-form" style="display:none;">
+                    <form action="/add_thesis" method="post">
+                        <input type="hidden" name="student" value="{{ student['name'] }}">
+                        <input type="text" name="title" placeholder="Enter thesis title" required>
+                        <input type="submit" value="Add Thesis">
+                    </form>
+                </div>
+                <h4>Theses:</h4>
+                <ul>
+                    {% for thesis in student['theses'] %}
+                        <li>
+                            {{ thesis }}
+                            <form action="/remove_thesis/{{ student['name'] }}/{{ thesis }}" method="get" style="display:inline;">
+                                <input type="submit" value="Remove Thesis">
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
 
-<form action="/add_student" method="post">
-    <input type="text" name="name" placeholder="Enter student name" required>
-    <input type="submit" value="Add Student">
-</form>
+    <form action="/add_student" method="post">
+        <input type="text" name="name" placeholder="Enter student name" required>
+        <input type="submit" value="Add Student">
+    </form>
 
-<h2>Theses</h2>
-<ul>
-    {% for thesis in theses %}
-    <li>{{ thesis }}</li>
-    {% endfor %}
-</ul>
-
-<form action="/add_thesis" method="post">
-    <input type="text" name="title" placeholder="Enter thesis title" required>
-    <input type="submit" value="Add Thesis">
-</form>
-
-<h2>Actions</h2>
-<ul>
-    {% for student in students %}
-    <li>
-        <a href="/remove_student/{{ student }}">Remove {{ student }}</a>
-    </li>
-    {% endfor %}
-</ul>
-
-<ul>
-    {% for thesis in theses %}
-    <li>
-        <a href="/remove_thesis/{{ thesis }}">Remove {{ thesis }}</a>
-    </li>
-    {% endfor %}
-</ul>
+    <script>
+        function toggleThesisForm(studentName) {
+            const formId = studentName + "-thesis-form";
+            const formElement = document.getElementById(formId);
+            formElement.style.display = formElement.style.display === "none" ? "block" : "none";
+        }
+    </script>
 </body>
 </html>
