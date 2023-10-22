@@ -22,7 +22,16 @@ class Thesis(db.Model):
     title = db.Column(db.String(255))
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'))
     student = db.relationship('Student', backref=db.backref('theses', lazy=True))
+    ratings = db.relationship('ThesisRating', backref='thesis', lazy='dynamic')
 
+class ThesisRating(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    thesis_id = db.Column(db.Integer, db.ForeignKey('thesis.id'))
+    criterion = db.Column(db.String(255))
+    weight = db.Column(db.Integer)
+    rating = db.Column(db.Integer)
+
+# =====================================================================
 
 @app.route('/')
 def dashboard():
@@ -88,13 +97,40 @@ def edit_thesis(thesis_id):
     db.session.commit()
     return redirect('/')
 
-
 @app.route('/thesis/delete/<int:thesis_id>')
 def delete_thesis(thesis_id):
     thesis = Thesis.query.get(thesis_id)
     db.session.delete(thesis)
     db.session.commit()
     return redirect('/')
+
+@app.route('/thesis/<int:thesis_id>/add_rating', methods=['POST'])
+def add_rating(thesis_id):
+    thesis = Thesis.query.get(thesis_id)
+    criterion = request.form['criterion']
+    weight = int(request.form['weight'])
+    rating = int(request.form['rating'])
+
+    rating_entry = ThesisRating(thesis=thesis, criterion=criterion, weight=weight, rating=rating)
+    db.session.add(rating_entry)
+    db.session.commit()
+
+    return redirect(f'/thesis/{thesis_id}')
+
+@app.route('/thesis/<int:thesis_id>')
+def thesis_detail(thesis_id):
+    thesis = Thesis.query.get(thesis_id)
+    ratings = ThesisRating.query.filter_by(thesis_id=thesis_id).all()
+    total_weight = sum(rating.weight for rating in ratings)
+    average_rating = sum(rating.rating * rating.weight for rating in ratings) / total_weight if total_weight > 0 else 0
+
+    return render_template(
+        'thesis_detail.html',
+        thesis=thesis,
+        ratings=ratings,
+        total_weight=total_weight,
+        average_rating=average_rating
+    )
 
 
 if __name__ == '__main__':

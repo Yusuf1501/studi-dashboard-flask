@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title2 %}
+    Thesendetail: {{ thesis.title }}
+{% endblock %}
+
+{% block content %}
+
+    <!-- Formular zum Hinzufügen eines Bewertungskriteriums -->
+    <form action="/thesis/{{ thesis.id }}/add_rating" method="post">
+        <input type="text" name="criterion" placeholder="Bewertungskriterium" required>
+        <input type="number" name="weight" placeholder="Gewichtung" required>
+        <input type="number" name="rating" placeholder="Note" required>
+        <input type="submit" value="Hinzufügen">
+    </form>
+
+    <!-- Tabelle zur Anzeige der Bewertungskriterien -->
+    <table>
+        <tr>
+            <th>Kriterium</th>
+            <th>Gewichtung</th>
+            <th>Note</th>
+        </tr>
+        {% for rating in thesis.ratings %}
+            <tr>
+                <td>{{ rating.criterion }}</td>
+                <td>{{ rating.weight }}</td>
+                <td>{{ rating.rating }}</td>
+            </tr>
+        {% endfor %}
+        <!-- Fußzeile der Tabelle -->
+        <tr>
+            <td colspan="3">Summe der Gewichtungen: {{ total_weight }}</td>
+        </tr>
+        <tr>
+            <td colspan="3">Durchschnittsnote: {{ average_rating }}</td>
+        </tr>
+    </table>
+{% endblock %}
