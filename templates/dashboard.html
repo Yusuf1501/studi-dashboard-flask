@@ -28,6 +28,15 @@
         <input type="submit" value="Erstellen">
     </form>
 
+    <hr>
+
+    <form action="/search" method="GET">
+        <input type="text" name="search" placeholder="Nach Namen suchen">
+        <input type="submit" value="Suchen">
+    </form>
+
+    <hr>
+
     <table>
         <tr>
             <th>Name</th>
@@ -59,30 +68,5 @@
         <input type="submit" value="Erstellen">
     </form>
 
-    <table>
-        <tr>
-            <th>Titel</th>
-            <th>Student</th>
-            <th>Aktionen</th>
-        </tr>
-        {% for thesis in theses %}
-            <tr>
-                <td>{{ thesis.title }}</td>
-                <td>{{ thesis.student.name }}</td>
-                <td>
-                    <form action="/thesis/edit/{{ thesis.id }}" method="post">
-                        <input type="text" name="title" placeholder="Titel" value="{{ thesis.title }}">
-                        <select name="student_id">
-                            {% for student in students %}
-                                <option value="{{ student.id }}" {% if student.id == thesis.student_id %}selected{% endif %}>{{ student.name }}</option>
-                            {% endfor %}
-                        </select>
-                        <input type="submit" value="Bearbeiten">
-                    </form>
-                    <a href="/thesis/delete/{{ thesis.id }}">Löschen</a>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
 </body>
 </html>

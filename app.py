@@ -27,9 +27,13 @@ class Thesis(db.Model):
 @app.route('/')
 def dashboard():
     students = Student.query.all()
-    theses = Thesis.query.all()
-    return render_template('dashboard.html', students=students, theses=theses)
+    return render_template('dashboard.html', students=students)
 
+@app.route('/search', methods=['GET'])
+def search():
+    search_term = request.args.get('search')
+    students = Student.query.filter(Student.name.ilike(f'%{search_term}%')).all()
+    return render_template('dashboard.html', students=students)
 
 @app.route('/student/create', methods=['POST'])
 def create_student():

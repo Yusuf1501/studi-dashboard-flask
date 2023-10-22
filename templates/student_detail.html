@@ -11,11 +11,22 @@
     <p>E-Mail: {{ student.email }}</p>
 
     <h2>Thesen von {{ student.name }}</h2>
-    <ul>
+    <table>
+        <tr>
+            <th>Titel</th>
+            <th>Student</th>
+            <th>Aktionen</th>
+        </tr>
         {% for thesis in theses %}
-            <li>{{ thesis.title }}</li>
+            <tr>
+                <td>{{ thesis.title }}</td>
+                <td>{{ thesis.student.name }}</td>
+                <td>
+                    <a href="/thesis/delete/{{ thesis.id }}">Löschen</a>
+                </td>
+            </tr>
         {% endfor %}
-    </ul>
+    </table>
 
     <h2>Bearbeiten</h2>
     <form action="/student/edit/{{ student.id }}" method="post">
