@@ -73,6 +73,7 @@ def create_thesis():
 def edit_thesis(thesis_id):
     thesis = Thesis.query.get(thesis_id)
     thesis.title = request.form['title']
+    thesis.student_id = request.form['student_id']
     db.session.commit()
     return redirect('/')
 
