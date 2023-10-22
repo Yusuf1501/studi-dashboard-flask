@@ -41,12 +41,7 @@
                 <td>{{ student.matrikelnummer }}</td>
                 <td>{{ student.email }}</td>
                 <td>
-                    <form action="/student/edit/{{ student.id }}" method="post">
-                        <input type="text" name="name" placeholder="Name" value="{{ student.name }}">
-                        <input type="text" name="matrikelnummer" placeholder="Matrikelnummer" value="{{ student.matrikelnummer }}">
-                        <input type="email" name="email" placeholder="E-Mail-Adresse" value="{{ student.email }}">
-                        <input type="submit" value="Bearbeiten">
-                    </form>
+                    <a href="/student/{{ student.id }}">Detail</a>
                     <a href="/student/delete/{{ student.id }}">Löschen</a>
                 </td>
             </tr>

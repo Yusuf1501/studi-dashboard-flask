@@ -41,6 +41,11 @@ def create_student():
     db.session.commit()
     return redirect('/')
 
+@app.route('/student/<int:student_id>')
+def student_detail(student_id):
+    student = Student.query.get(student_id)
+    theses = Thesis.query.filter_by(student_id=student_id).all()
+    return render_template('student_detail.html', student=student, theses=theses)
 
 @app.route('/student/edit/<int:student_id>', methods=['POST'])
 def edit_student(student_id):

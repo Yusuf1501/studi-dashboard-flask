@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Studenten-Detail</title>
+</head>
+<body>
+    <h1>Studenten-Detail</h1>
+
+    <h2>{{ student.name }}</h2>
+    <p>Matrikelnummer: {{ student.matrikelnummer }}</p>
+    <p>E-Mail: {{ student.email }}</p>
+
+    <h2>Thesen von {{ student.name }}</h2>
+    <ul>
+        {% for thesis in theses %}
+            <li>{{ thesis.title }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Bearbeiten</h2>
+    <form action="/student/edit/{{ student.id }}" method="post">
+        <input type="text" name="name" placeholder="Name" value="{{ student.name }}">
+        <input type="text" name="matrikelnummer" placeholder="Matrikelnummer" value="{{ student.matrikelnummer }}">
+        <input type="email" name="email" placeholder="E-Mail-Adresse" value="{{ student.email }}">
+        <input type="submit" value="Speichern">
+    </form>
+
+</body>
+</html>
