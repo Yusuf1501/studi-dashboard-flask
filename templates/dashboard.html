@@ -1,25 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
 
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
+{% extends "base.html" %}
 
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
-</head>
-<body>
+{%block content %}
     <h1>Studenten verwalten</h1>
     <form action="/student/create" method="post">
         <input type="text" name="student_name" placeholder="Name">
@@ -68,5 +50,4 @@
         <input type="submit" value="Erstellen">
     </form>
 
-</body>
-</html>
+{% endblock %}

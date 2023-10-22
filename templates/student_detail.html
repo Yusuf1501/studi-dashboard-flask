@@ -1,12 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Studenten-Detail</title>
-</head>
-<body>
-    <h1>Studenten-Detail</h1>
 
-    <h2>{{ student.name }}</h2>
+{% extends "base.html" %}
+
+{% block title2 %}
+ Studenten-Detail - {{ student.name }}
+{% endblock %}
+
+{% block content %}
+
     <p>Matrikelnummer: {{ student.matrikelnummer }}</p>
     <p>E-Mail: {{ student.email }}</p>
 
@@ -36,5 +36,4 @@
         <input type="submit" value="Speichern">
     </form>
 
-</body>
-</html>
+{% endblock %}

@@ -55,8 +55,10 @@ def student_detail(student_id):
 def edit_student(student_id):
     student = Student.query.get(student_id)
     student.name = request.form['name']
+    student.matrikelnummer = request.form['matrikelnummer']
+    student.email = request.form['email']
     db.session.commit()
-    return redirect('/')
+    return redirect(f'/student/{student_id}')
 
 
 @app.route('/student/delete/<int:student_id>')

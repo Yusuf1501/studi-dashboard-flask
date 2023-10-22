@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Thesenverwaltung{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>{% block title2 %}Thesenverwaltung{% endblock %}</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Startseite</a></li>
+                <li><a href="/about">Über uns</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %} {% endblock %}
+    </main>
+
+    <footer>
+        &copy; 2023 Yusuf Karim
+    </footer>
+</body>
+</html>
