@@ -19,21 +19,31 @@
         <tr>
             <th>Kriterium</th>
             <th>Gewichtung</th>
-            <th>Note</th>
+            <th>Punkte</th>
+            <th>Gewichtete Punkte</th>
+            <th>Aktionen</th>
         </tr>
         {% for rating in thesis.ratings %}
             <tr>
                 <td>{{ rating.criterion }}</td>
                 <td>{{ rating.weight }}</td>
                 <td>{{ rating.rating }}</td>
+                <td>{{ rating.weight * rating.rating }}</td>
+                <td>
+                    <a href="/thesis/{{ thesis.id }}/rating/delete/{{ rating.id }}">Löschen</a>
+                </td>
             </tr>
         {% endfor %}
         <!-- Fußzeile der Tabelle -->
-        <tr>
-            <td colspan="3">Summe der Gewichtungen: {{ total_weight }}</td>
+        <tr class="table_footer">
+            <td colspan="1"><strong>Summen</strong></td>
+            <td>{{ total_weight }}</td>
+            <td></td>
+            <td>{{ total_rating }}</td>
+            <td></td>
         </tr>
         <tr>
-            <td colspan="3">Durchschnittsnote: {{ average_rating }}</td>
+            <td colspan="5">Durchschnittsnote: {{ average_rating }}</td>
         </tr>
     </table>
 {% endblock %}

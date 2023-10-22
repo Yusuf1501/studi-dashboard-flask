@@ -69,14 +69,12 @@ def edit_student(student_id):
     db.session.commit()
     return redirect(f'/student/{student_id}')
 
-
 @app.route('/student/delete/<int:student_id>')
 def delete_student(student_id):
     student = Student.query.get(student_id)
     db.session.delete(student)
     db.session.commit()
     return redirect('/')
-
 
 @app.route('/thesis/create', methods=['POST'])
 def create_thesis():
@@ -87,7 +85,6 @@ def create_thesis():
     db.session.add(thesis)
     db.session.commit()
     return redirect('/')
-
 
 @app.route('/thesis/edit/<int:thesis_id>', methods=['POST'])
 def edit_thesis(thesis_id):
@@ -122,16 +119,30 @@ def thesis_detail(thesis_id):
     thesis = Thesis.query.get(thesis_id)
     ratings = ThesisRating.query.filter_by(thesis_id=thesis_id).all()
     total_weight = sum(rating.weight for rating in ratings)
-    average_rating = sum(rating.rating * rating.weight for rating in ratings) / total_weight if total_weight > 0 else 0
+    total_rating = sum(rating.rating * rating.weight for rating in ratings)
+    average_rating = total_rating / total_weight if total_weight > 0 else 0
 
     return render_template(
         'thesis_detail.html',
         thesis=thesis,
         ratings=ratings,
         total_weight=total_weight,
+        total_rating=total_rating,
         average_rating=average_rating
     )
 
+@app.route('/thesis/<int:thesis_id>/rating/delete/<int:rating_id>', methods=['GET', 'POST'])
+def delete_rating(thesis_id, rating_id):
+    thesis = Thesis.query.get(thesis_id)
+    rating = ThesisRating.query.get(rating_id)
+
+    if rating:
+        db.session.delete(rating)
+        db.session.commit()
+
+    return redirect(f'/thesis/{thesis_id}')
+
+# =========================================================================
 
 if __name__ == '__main__':
     app.run(debug=True)
