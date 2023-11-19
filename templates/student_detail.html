@@ -1,40 +1,62 @@
-
 {% extends "base.html" %}
 
 {% block title2 %}
- Studenten-Detail - {{ student.name }}
+    Studenten-Detail - {{ student.name }}
 {% endblock %}
 
 {% block content %}
+    <div class="container my-5">
+        <h1>Studenten-Detail - {{ student.name }}</h1>
 
-    <p>Matrikelnummer: {{ student.matrikelnummer }}</p>
-    <p>E-Mail: {{ student.email }}</p>
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Matrikelnummer:</h5>
+                <p class="card-text">{{ student.matrikelnummer }}</p>
+            </div>
+        </div>
 
-    <h2>Thesen von {{ student.name }}</h2>
-    <table>
-        <tr>
-            <th>Titel</th>
-            <th>Student</th>
-            <th>Aktionen</th>
-        </tr>
-        {% for thesis in theses %}
-            <tr>
-                <td>{{ thesis.title }}</td>
-                <td>{{ thesis.student.name }}</td>
-                <td>
-                    <a href="/thesis/{{ thesis.id }}">Detail</a>
-                    <a href="/thesis/delete/{{ thesis.id }}">Löschen</a>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">E-Mail:</h5>
+                <p class="card-text">{{ student.email }}</p>
+            </div>
+        </div>
 
-    <h2>Bearbeiten</h2>
-    <form action="/student/edit/{{ student.id }}" method="post">
-        <input type="text" name="name" placeholder="Name" value="{{ student.name }}">
-        <input type="text" name="matrikelnummer" placeholder="Matrikelnummer" value="{{ student.matrikelnummer }}">
-        <input type="email" name="email" placeholder="E-Mail-Adresse" value="{{ student.email }}">
-        <input type="submit" value="Speichern">
-    </form>
+        <h2>Thesen von {{ student.name }}</h2>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Titel</th>
+                    <th>Student</th>
+                    <th>Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for thesis in theses %}
+                    <tr>
+                        <td>{{ thesis.title }}</td>
+                        <td>{{ thesis.student.name }}</td>
+                        <td>
+                            <a href="/thesis/{{ thesis.id }}" class="btn btn-info btn-sm"><i class="bi bi-info-circle"></i> Detail</a>
+                            <a href="/thesis/delete/{{ thesis.id }}" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i> Löschen</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
+        <h2>Bearbeiten</h2>
+        <form action="/student/edit/{{ student.id }}" method="post">
+            <div class="mb-3">
+                <input type="text" class="form-control" name="name" placeholder="Name" value="{{ student.name }}">
+            </div>
+            <div class="mb-3">
+                <input type="text" class="form-control" name="matrikelnummer" placeholder="Matrikelnummer" value="{{ student.matrikelnummer }}">
+            </div>
+            <div class="mb-3">
+                <input type="email" class="form-control" name="email" placeholder="E-Mail-Adresse" value="{{ student.email }}">
+            </div>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Speichern</button>
+        </form>
+    </div>
 {% endblock %}

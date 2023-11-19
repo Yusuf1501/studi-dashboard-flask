@@ -1,27 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Einstellungen</h1>
+    <div class="container my-5">
+        <h1>Einstellungen</h1>
 
-<!-- Formular zur Bearbeitung der Standardbewertungskriterien -->
-<form action="/settings" method="post">
-    <label for="new_criterion">Neues Kriterium hinzufügen:</label>
-    <input id="new_criterion" type="text" name="new_criterion">
-    <button type="submit">Hinzufügen</button>
-</form>
+        <!-- Formular zur Bearbeitung der Standardbewertungskriterien -->
+        <form action="/settings" method="post" class="mb-3">
+            <div class="input-group">
+                <input id="new_criterion" type="text" class="form-control" name="new_criterion" placeholder="Neues Kriterium hinzufügen">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-plus"></i> Hinzufügen</button>
+            </div>
+        </form>
 
-<!-- Tabelle zur Anzeige und Bearbeitung der Standardbewertungskriterien -->
-<table>
-    <tr>
-        <th>Kriterium</th>
-        <th>Aktion</th>
-    </tr>
-    {% for criterion in criteria %}
-    <tr>
-        <td>{{ criterion.criterion }}</td>
-        <td><a href="/settings/delete_criterion/{{ criterion.id }}">Löschen</a></td>
-    </tr>
-    {% endfor %}
-</table>
-
+        <!-- Tabelle zur Anzeige und Bearbeitung der Standardbewertungskriterien -->
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Kriterium</th>
+                    <th>Aktion</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for criterion in criteria %}
+                    <tr>
+                        <td>{{ criterion.criterion }}</td>
+                        <td>
+                            <a href="/settings/delete_criterion/{{ criterion.id }}" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i> Löschen</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

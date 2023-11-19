@@ -58,6 +58,10 @@ def search():
     students = Student.query.filter(Student.name.ilike(f'%{search_term}%')).all()
     return render_template('dashboard.html', students=students)
 
+@app.route('/about')
+def about():
+    return render_template('about_us.html')
+
 @app.route('/student/create', methods=['POST'])
 def create_student():
     name = request.form['student_name']
