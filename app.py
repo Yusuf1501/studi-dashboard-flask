@@ -31,6 +31,16 @@ class ThesisRating(db.Model):
     weight = db.Column(db.Integer)
     rating = db.Column(db.Integer)
 
+
+def create_default_ratings(thesis):
+    default_criteria = ['Literaturverzeichnis', 'Aufbau', 'Schrift', 'Inhalt']
+
+    for criterion in default_criteria:
+        rating = ThesisRating(thesis=thesis, criterion=criterion, weight=0, rating=0)
+        db.session.add(rating)
+
+    db.session.commit()
+
 # =====================================================================
 
 @app.route('/')
@@ -84,6 +94,10 @@ def create_thesis():
     thesis = Thesis(title=title, student=student)
     db.session.add(thesis)
     db.session.commit()
+
+    # Erzeugen Sie die Standardbewertungskriterien für die neue Thesis
+    create_default_ratings(thesis)
+
     return redirect('/')
 
 @app.route('/thesis/edit/<int:thesis_id>', methods=['POST'])
@@ -130,6 +144,37 @@ def thesis_detail(thesis_id):
         total_rating=total_rating,
         average_rating=average_rating
     )
+
+
+@app.route('/thesis/<int:thesis_id>/update_ratings', methods=['POST'])
+def update_ratings(thesis_id):
+    thesis = Thesis.query.get(thesis_id)
+    ratings = ThesisRating.query.filter_by(thesis_id=thesis_id).all()
+
+    criteria = request.form.getlist('criterion[]')
+    weights = request.form.getlist('weight[]')
+    ratings_values = request.form.getlist('rating[]')
+
+    # Aktualisieren der Bewertungskriterien
+    for i in range(len(ratings)):
+        ratings[i].criterion = criteria[i]
+        ratings[i].weight = int(weights[i])
+        ratings[i].rating = int(ratings_values[i])
+
+    new_criterion = request.form['new_criterion']
+    new_weight = request.form['new_weight']
+    new_rating = request.form['new_rating']
+
+    if new_criterion and new_weight and new_rating:
+        # Hinzufügen neuer Bewertungskriterien
+
+        new_rating_entry = ThesisRating(thesis=thesis, criterion=new_criterion, weight=int(new_weight), rating=int(new_rating))
+        db.session.add(new_rating_entry)
+
+    db.session.commit()
+
+    return redirect(f'/thesis/{thesis_id}')
+
 
 @app.route('/thesis/<int:thesis_id>/rating/delete/<int:rating_id>', methods=['GET', 'POST'])
 def delete_rating(thesis_id, rating_id):
