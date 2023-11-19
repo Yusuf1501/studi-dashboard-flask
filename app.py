@@ -31,12 +31,16 @@ class ThesisRating(db.Model):
     weight = db.Column(db.Integer)
     rating = db.Column(db.Integer)
 
+class StandardCriteria(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    criterion = db.Column(db.String(255))
 
 def create_default_ratings(thesis):
-    default_criteria = ['Literaturverzeichnis', 'Aufbau', 'Schrift', 'Inhalt']
+    default_criteria = StandardCriteria.query.all()
 
+    # Verknüpfen Sie die Standardbewertungskriterien mit der neuen Thesis
     for criterion in default_criteria:
-        rating = ThesisRating(thesis=thesis, criterion=criterion, weight=0, rating=0)
+        rating = ThesisRating(thesis=thesis, criterion=criterion.criterion, weight=0, rating=0)
         db.session.add(rating)
 
     db.session.commit()
@@ -186,6 +190,39 @@ def delete_rating(thesis_id, rating_id):
         db.session.commit()
 
     return redirect(f'/thesis/{thesis_id}')
+
+
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    # Lade die Liste der aktuellen Standardbewertungskriterien aus der Datenbank
+    criteria = StandardCriteria.query.all()
+
+    if request.method == 'POST':
+        # Verarbeiten Sie das Formular zur Bearbeitung der Standardbewertungskriterien
+        new_criterion = request.form['new_criterion']
+
+        # Füge das neue Kriterium hinzu, wenn es nicht leer ist
+        if new_criterion:
+            standard_criterion = StandardCriteria(criterion=new_criterion)
+            db.session.add(standard_criterion)
+            db.session.commit()
+
+            # Aktualisiere die Liste der Kriterien
+            criteria = StandardCriteria.query.all()
+
+    return render_template('settings.html', criteria=criteria)
+
+
+@app.route('/settings/delete_criterion/<int:criterion_id>', methods=['GET', 'POST'])
+def delete_criterion(criterion_id):
+    criterion = StandardCriteria.query.get(criterion_id)
+
+    if criterion:
+        db.session.delete(criterion)
+        db.session.commit()
+
+    return redirect('/settings')
+
 
 # =========================================================================
 

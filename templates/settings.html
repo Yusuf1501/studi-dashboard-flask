@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Einstellungen</h1>
+
+<!-- Formular zur Bearbeitung der Standardbewertungskriterien -->
+<form action="/settings" method="post">
+    <label for="new_criterion">Neues Kriterium hinzufügen:</label>
+    <input id="new_criterion" type="text" name="new_criterion">
+    <button type="submit">Hinzufügen</button>
+</form>
+
+<!-- Tabelle zur Anzeige und Bearbeitung der Standardbewertungskriterien -->
+<table>
+    <tr>
+        <th>Kriterium</th>
+        <th>Aktion</th>
+    </tr>
+    {% for criterion in criteria %}
+    <tr>
+        <td>{{ criterion.criterion }}</td>
+        <td><a href="/settings/delete_criterion/{{ criterion.id }}">Löschen</a></td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
