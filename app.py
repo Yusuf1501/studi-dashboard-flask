@@ -63,8 +63,15 @@ def dashboard():
 
 @app.route('/search', methods=['GET'])
 def search():
-    search_term = request.args.get('search')
-    students = Student.query.filter(Student.name.ilike(f'%{search_term}%')).all()
+    search_query = request.args.get('search')
+    search_terms = search_query.split()
+
+    students = Student.query.filter(
+        db.or_(
+            *[(Student.first_name.ilike(f"%{term}%") | Student.last_name.ilike(f"%{term}%") |
+               Student.matrikelnummer.ilike(f"%{term}%") | Student.email.ilike(f"%{term}%")) for term in search_terms]
+        )
+    ).all()
     return render_template('dashboard.html', students=students)
 
 
