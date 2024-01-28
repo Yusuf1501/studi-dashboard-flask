@@ -12,54 +12,97 @@
             {{ thesis.description }}
         </p>
 
+        <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal"
+                data-bs-target="#createThesisModal">
+            <i class="bi bi-edit"></i> Bearbeiten
+        </button>
+
         <!-- Tabelle zur Anzeige und Bearbeitung der Bewertungskriterien -->
         <form action="/thesis/{{ thesis.id }}/update_ratings" method="post">
             <table class="table table-bordered">
                 <thead>
-                    <tr>
-                        <th>Kriterium</th>
-                        <th>Gewichtung</th>
-                        <th>Note</th>
-                        <th>Gewichtete Punkte</th>
-                        <th>Aktion</th>
-                    </tr>
+                <tr>
+                    <th>Kriterium</th>
+                    <th>Gewichtung</th>
+                    <th>Note</th>
+                    <th>Gewichtete Punkte</th>
+                    <th>Aktion</th>
+                </tr>
                 </thead>
                 <tbody>
-                    {% for rating in ratings %}
-                        <tr>
-                            <td><input type="text" class="form-control" name="criterion[]" value="{{ rating.criterion }}"></td>
-                            <td><input type="number" class="form-control" name="weight[]" value="{{ rating.weight }}"></td>
-                            <td><input type="number" class="form-control" name="rating[]" value="{{ rating.rating }}"></td>
-                            <td>{{ rating.weight * rating.rating }}</td>
-                            <td>
-                                <a href="/thesis/{{ thesis.id }}/rating/delete/{{ rating.id }}" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i> Löschen</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-
+                {% for rating in ratings %}
                     <tr>
-                        <td><input type="text" class="form-control" name="new_criterion" placeholder="Neues Kriterium"></td>
-                        <td><input type="number" class="form-control" name="new_weight" placeholder="Gewichtung"></td>
-                        <td><input type="number" class="form-control" name="new_rating" placeholder="Note"></td>
-                        <td></td>
-                        <td><button type="submit" class="btn btn-primary"><i class="bi bi-check"></i> Aktualisieren</button></td>
+                        <td><input type="text" class="form-control" name="criterion[]" value="{{ rating.criterion }}">
+                        </td>
+                        <td><input type="number" class="form-control" name="weight[]" value="{{ rating.weight }}"></td>
+                        <td><input type="number" class="form-control" name="rating[]" value="{{ rating.rating }}"></td>
+                        <td>{{ rating.weight * rating.rating }}</td>
+                        <td>
+                            <a href="/thesis/{{ thesis.id }}/rating/delete/{{ rating.id }}"
+                               class="btn btn-danger btn-sm"><i class="bi bi-trash"></i> Löschen</a>
+                        </td>
                     </tr>
+                {% endfor %}
+
+                <tr>
+                    <td><input type="text" class="form-control" name="new_criterion" placeholder="Neues Kriterium"></td>
+                    <td><input type="number" class="form-control" name="new_weight" placeholder="Gewichtung"></td>
+                    <td><input type="number" class="form-control" name="new_rating" placeholder="Note"></td>
+                    <td></td>
+                    <td>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-check"></i> Aktualisieren</button>
+                    </td>
+                </tr>
                 </tbody>
 
                 <!-- Fußzeile der Tabelle -->
                 <tfoot>
-                    <tr>
-                        <td colspan="1"><strong>Summen</strong></td>
-                        <td>{{ total_weight }}</td>
-                        <td></td>
-                        <td>{{ total_rating }}</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td colspan="5">Durchschnittsnote: {{ average_rating }}</td>
-                    </tr>
+                <tr>
+                    <td colspan="1"><strong>Summen</strong></td>
+                    <td>{{ total_weight }}</td>
+                    <td></td>
+                    <td>{{ total_rating }}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="5">Durchschnittsnote: {{ average_rating }}</td>
+                </tr>
                 </tfoot>
             </table>
         </form>
+    </div>
+
+
+    <!-- Modal für die Abschlussarbeitserstellung -->
+    <div class="modal fade" id="createThesisModal" tabindex="-1" aria-labelledby="createThesisModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createThesisModalLabel">Abschlussarbeit Bearbeiten</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/thesis/edit/{{ thesis.id }}" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="title" placeholder="Titel"
+                                   value="{{ thesis.title }}">
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" name="description"
+                                      placeholder="Beschreibung">{{ thesis.description }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <input type="date" class="form-control" name="deadline" placeholder="Abgabedatum"
+                                   value="{{ thesis.deadline }}">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-check"></i> Speichern</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 {% endblock %}

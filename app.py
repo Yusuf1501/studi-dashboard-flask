@@ -142,9 +142,8 @@ def edit_thesis(thesis_id):
     thesis.title = request.form['title']
     thesis.description = request.form['description']
     thesis.deadline = request.form['deadline']
-    thesis.student_id = request.form['student_id']
     db.session.commit()
-    return redirect('/')
+    return redirect('/thesis/' + str(thesis_id))
 
 
 @app.route('/thesis/delete/<int:thesis_id>')
