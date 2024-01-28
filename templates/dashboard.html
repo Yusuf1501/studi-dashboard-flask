@@ -5,14 +5,11 @@
         <div class="row">
             <div class="col-md-6">
                 <h1>Studenten verwalten</h1>
-                <form action="/student/create" method="post" class="mb-3">
-                    <div class="input-group">
-                        <input type="text" class="form-control" name="student_name" placeholder="Name">
-                        <input type="text" class="form-control" name="matrikelnummer" placeholder="Matrikelnummer">
-                        <input type="email" class="form-control" name="email" placeholder="E-Mail-Adresse">
-                        <button type="submit" class="btn btn-primary"><i class="bi bi-plus"></i> Erstellen</button>
-                    </div>
-                </form>
+
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#createStudentModal">
+                    <i class="bi bi-plus"></i> Student erstellen
+                </button>
             </div>
 
             <div class="col-md-6">
@@ -43,26 +40,63 @@
 
         <table class="table table-bordered table-striped">
             <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Matrikelnummer</th>
-                    <th>E-Mail</th>
-                    <th>Aktionen</th>
-                </tr>
+            <tr>
+                <th>Vorname</th>
+                <th>Nachname</th>
+                <th>Matrikelnummer</th>
+                <th>E-Mail</th>
+                <th>Aktionen</th>
+            </tr>
             </thead>
             <tbody>
-                {% for student in students %}
-                    <tr>
-                        <td>{{ student.name }}</td>
-                        <td>{{ student.matrikelnummer }}</td>
-                        <td>{{ student.email }}</td>
-                        <td>
-                            <a href="/student/{{ student.id }}" class="btn btn-info btn-sm"><i class="bi bi-info-circle"></i> Detail</a>
-                            <a href="/student/delete/{{ student.id }}" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i> Löschen</a>
-                        </td>
-                    </tr>
-                {% endfor %}
+            {% for student in students %}
+                <tr>
+                    <td>{{ student.first_name }}</td>
+                    <td>{{ student.last_name }}</td>
+                    <td>{{ student.matrikelnummer }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>
+                        <a href="/student/{{ student.id }}" class="btn btn-info btn-sm"><i
+                                class="bi bi-info-circle"></i> Detail</a>
+                        <a href="/student/delete/{{ student.id }}" class="btn btn-danger btn-sm"><i
+                                class="bi bi-trash"></i> Löschen</a>
+                    </td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
+    </div>
+
+    <!-- Modal für die Studentenerstellung -->
+    <div class="modal fade" id="createStudentModal" tabindex="-1" aria-labelledby="createStudentModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createStudentModalLabel">Student erstellen</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/student/create" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="first_name" placeholder="Vorname">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="last_name" placeholder="Nachname">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="matrikelnummer" placeholder="Matrikelnummer">
+                        </div>
+                        <div class="mb-3">
+                            <input type="email" class="form-control" name="email" placeholder="E-Mail-Adresse">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Speichern</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 {% endblock %}

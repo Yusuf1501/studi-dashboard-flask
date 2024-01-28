@@ -9,10 +9,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://user_version_1:p
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+
 # Definition der Datenbankmodelle für Studenten und Abschlussarbeiten
 class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255))
+    first_name = db.Column(db.String(50))
+    last_name = db.Column(db.String(50))
     matrikelnummer = db.Column(db.String(20))
     email = db.Column(db.String(255))
 
