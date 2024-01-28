@@ -26,6 +26,7 @@ class Thesis(db.Model):
     student = db.relationship('Student', backref=db.backref('theses', lazy=True))
     ratings = db.relationship('ThesisRating', backref='thesis', lazy='dynamic')
 
+
 class ThesisRating(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     thesis_id = db.Column(db.Integer, db.ForeignKey('thesis.id'))
@@ -33,9 +34,11 @@ class ThesisRating(db.Model):
     weight = db.Column(db.Integer)
     rating = db.Column(db.Integer)
 
+
 class StandardCriteria(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     criterion = db.Column(db.String(255))
+
 
 def create_default_ratings(thesis):
     default_criteria = StandardCriteria.query.all()
@@ -49,10 +52,12 @@ def create_default_ratings(thesis):
 
 # =====================================================================
 
+
 @app.route('/')
 def dashboard():
     students = Student.query.all()
     return render_template('dashboard.html', students=students)
+
 
 @app.route('/search', methods=['GET'])
 def search():
@@ -60,9 +65,11 @@ def search():
     students = Student.query.filter(Student.name.ilike(f'%{search_term}%')).all()
     return render_template('dashboard.html', students=students)
 
+
 @app.route('/about')
 def about():
     return render_template('about_us.html')
+
 
 @app.route('/student/create', methods=['POST'])
 def create_student():
