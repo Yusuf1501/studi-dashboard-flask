@@ -14,17 +14,11 @@
 
             <div class="col-md-6">
                 <h1>Abschlussarbeiten verwalten</h1>
-                <form action="/thesis/create" method="post" class="mb-3">
-                    <div class="input-group">
-                        <input type="text" class="form-control" name="title" placeholder="Titel">
-                        <select class="form-select" name="student_id">
-                            {% for student in students %}
-                                <option value="{{ student.id }}">{{ student.name }}</option>
-                            {% endfor %}
-                        </select>
-                        <button type="submit" class="btn btn-primary"><i class="bi bi-plus"></i> Erstellen</button>
-                    </div>
-                </form>
+
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#createThesisModal">
+                    <i class="bi bi-plus"></i> Abschlussarbeit erstellen
+                </button>
             </div>
         </div>
 
@@ -99,4 +93,40 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal für die Abschlussarbeitserstellung -->
+<div class="modal fade" id="createThesisModal" tabindex="-1" aria-labelledby="createThesisModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createThesisModalLabel">Abschlussarbeit erstellen</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/thesis/create" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="title" placeholder="Titel">
+                    </div>
+                    <div class="mb-3">
+                        <textarea class="form-control" name="description" placeholder="Beschreibung"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <input type="date" class="form-control" name="deadline" placeholder="Abgabedatum">
+                    </div>
+                    <div class="mb-3">
+                        <select name="student_id" class="form-select">
+                            {% for student in students %}
+                                <option value="{{ student.id }}">{{ student.first_name }} {{ student.last_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check"></i> Speichern</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block title2 %}
-    Studenten-Detail - {{ student.name }}
+    Studenten-Detail - {{ student.first_name }} {{ student.last_name }}
 {% endblock %}
 
 {% block content %}
     <div class="container my-5">
-        <h1>Studenten-Detail - {{ student.name }}</h1>
+        <h1>Studenten-Detail - {{ student.first_name }} {{ student.last_name }}</h1>
 
         <div class="card mb-3">
             <div class="card-body">
@@ -22,12 +22,13 @@
             </div>
         </div>
 
-        <h2>Thesen von {{ student.name }}</h2>
+        <h2>Thesen von {{ student.first_name }} {{ student.last_name }}</h2>
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>Titel</th>
-                    <th>Student</th>
+                    <th>Beschreibung</th>
+                    <th>Abgabedatum</th>
                     <th>Aktionen</th>
                 </tr>
             </thead>
@@ -35,7 +36,8 @@
                 {% for thesis in theses %}
                     <tr>
                         <td>{{ thesis.title }}</td>
-                        <td>{{ thesis.student.name }}</td>
+                        <td>{{ thesis.description }}</td>
+                        <td>{{ thesis.deadline.strftime('%d.%m.%Y') }}</td>
                         <td>
                             <a href="/thesis/{{ thesis.id }}" class="btn btn-info btn-sm"><i class="bi bi-info-circle"></i> Detail</a>
                             <a href="/thesis/delete/{{ thesis.id }}" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i> Löschen</a>
@@ -46,9 +48,13 @@
         </table>
 
         <h2>Bearbeiten</h2>
+
         <form action="/student/edit/{{ student.id }}" method="post">
             <div class="mb-3">
-                <input type="text" class="form-control" name="name" placeholder="Name" value="{{ student.name }}">
+                <input type="text" class="form-control" name="first_name" placeholder="Vorname" value="{{ student.first_name }}">
+            </div>
+            <div class="mb-3">
+                <input type="text" class="form-control" name="last_name" placeholder="Nachname" value="{{ student.last_name }}">
             </div>
             <div class="mb-3">
                 <input type="text" class="form-control" name="matrikelnummer" placeholder="Matrikelnummer" value="{{ student.matrikelnummer }}">
@@ -59,4 +65,5 @@
             <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Speichern</button>
         </form>
     </div>
+
 {% endblock %}

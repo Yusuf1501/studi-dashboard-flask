@@ -22,7 +22,9 @@ class Student(db.Model):
 class Thesis(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255))
+    description = db.Column(db.Text)
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'))
+    deadline = db.Column(db.Date)
     student = db.relationship('Student', backref=db.backref('theses', lazy=True))
     ratings = db.relationship('ThesisRating', backref='thesis', lazy='dynamic')
 
@@ -93,7 +95,8 @@ def student_detail(student_id):
 @app.route('/student/edit/<int:student_id>', methods=['POST'])
 def edit_student(student_id):
     student = Student.query.get(student_id)
-    student.name = request.form['name']
+    student.first_name = request.form['first_name']
+    student.last_name = request.form['last_name']
     student.matrikelnummer = request.form['matrikelnummer']
     student.email = request.form['email']
     db.session.commit()
@@ -112,8 +115,11 @@ def delete_student(student_id):
 def create_thesis():
     title = request.form['title']
     student_id = int(request.form['student_id'])
+    description = request.form['description']
+    deadline = request.form['deadline']
+
     student = Student.query.get(student_id)
-    thesis = Thesis(title=title, student=student)
+    thesis = Thesis(title=title, description=description, deadline=deadline, student=student)
     db.session.add(thesis)
     db.session.commit()
 
@@ -127,6 +133,8 @@ def create_thesis():
 def edit_thesis(thesis_id):
     thesis = Thesis.query.get(thesis_id)
     thesis.title = request.form['title']
+    thesis.description = request.form['description']
+    thesis.deadline = request.form['deadline']
     thesis.student_id = request.form['student_id']
     db.session.commit()
     return redirect('/')

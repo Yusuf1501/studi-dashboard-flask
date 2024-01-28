@@ -7,6 +7,10 @@
 {% block content %}
     <div class="container my-5">
         <h1>Thesendetail: {{ thesis.title }}</h1>
+        <h3>Abgabedatum: {{ thesis.deadline.strftime('%d.%m.%Y') }}</h3>
+        <p>
+            {{ thesis.description }}
+        </p>
 
         <!-- Tabelle zur Anzeige und Bearbeitung der Bewertungskriterien -->
         <form action="/thesis/{{ thesis.id }}/update_ratings" method="post">
