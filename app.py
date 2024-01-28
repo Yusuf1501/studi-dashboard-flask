@@ -73,19 +73,22 @@ def about():
 
 @app.route('/student/create', methods=['POST'])
 def create_student():
-    name = request.form['student_name']
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
     matrikelnummer = request.form['matrikelnummer']
     email = request.form['email']
-    student = Student(name=name, matrikelnummer=matrikelnummer, email=email)
+    student = Student(first_name=first_name, last_name=last_name, matrikelnummer=matrikelnummer, email=email)
     db.session.add(student)
     db.session.commit()
     return redirect('/')
+
 
 @app.route('/student/<int:student_id>')
 def student_detail(student_id):
     student = Student.query.get(student_id)
     theses = Thesis.query.filter_by(student_id=student_id).all()
     return render_template('student_detail.html', student=student, theses=theses)
+
 
 @app.route('/student/edit/<int:student_id>', methods=['POST'])
 def edit_student(student_id):
@@ -96,12 +99,14 @@ def edit_student(student_id):
     db.session.commit()
     return redirect(f'/student/{student_id}')
 
+
 @app.route('/student/delete/<int:student_id>')
 def delete_student(student_id):
     student = Student.query.get(student_id)
     db.session.delete(student)
     db.session.commit()
     return redirect('/')
+
 
 @app.route('/thesis/create', methods=['POST'])
 def create_thesis():
@@ -117,6 +122,7 @@ def create_thesis():
 
     return redirect('/')
 
+
 @app.route('/thesis/edit/<int:thesis_id>', methods=['POST'])
 def edit_thesis(thesis_id):
     thesis = Thesis.query.get(thesis_id)
@@ -125,12 +131,14 @@ def edit_thesis(thesis_id):
     db.session.commit()
     return redirect('/')
 
+
 @app.route('/thesis/delete/<int:thesis_id>')
 def delete_thesis(thesis_id):
     thesis = Thesis.query.get(thesis_id)
     db.session.delete(thesis)
     db.session.commit()
     return redirect('/')
+
 
 @app.route('/thesis/<int:thesis_id>/add_rating', methods=['POST'])
 def add_rating(thesis_id):
@@ -144,6 +152,7 @@ def add_rating(thesis_id):
     db.session.commit()
 
     return redirect(f'/thesis/{thesis_id}')
+
 
 @app.route('/thesis/<int:thesis_id>')
 def thesis_detail(thesis_id):
