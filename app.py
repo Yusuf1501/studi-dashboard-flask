@@ -192,16 +192,15 @@ def update_ratings(thesis_id):
     # Aktualisieren der Bewertungskriterien
     for i in range(len(ratings)):
         ratings[i].criterion = criteria[i]
-        ratings[i].weight = int(weights[i])
-        ratings[i].rating = int(ratings_values[i])
+        ratings[i].weight = int(weights[i] if weights[i] else '0')
+        ratings[i].rating = int(ratings_values[i] if ratings_values[i] else '0')
 
     new_criterion = request.form['new_criterion']
-    new_weight = request.form['new_weight']
-    new_rating = request.form['new_rating']
+    new_weight = request.form['new_weight'] if request.form['new_weight'] else '0'
+    new_rating = request.form['new_rating'] if request.form['new_rating'] else '0'
 
-    if new_criterion and new_weight and new_rating:
+    if new_criterion:
         # Hinzufügen neuer Bewertungskriterien
-
         new_rating_entry = ThesisRating(thesis=thesis, criterion=new_criterion, weight=int(new_weight), rating=int(new_rating))
         db.session.add(new_rating_entry)
 
