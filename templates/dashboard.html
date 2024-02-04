@@ -115,6 +115,7 @@
                     </div>
                     <div class="mb-3">
                         <select name="student_id" class="form-select">
+                            <option value="" disabled selected>Bitte auswählen</option>
                             {% for student in students %}
                                 <option value="{{ student.id }}">{{ student.first_name }} {{ student.last_name }}</option>
                             {% endfor %}
